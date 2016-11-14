@@ -94,3 +94,29 @@ ggplot(data.combined[1:891,], aes(x = Age, fill = Survived)) +
   geom_histogram(binwidth = 10) +
   xlab("Age") +
   ylab("Total Count")
+
+
+# Validate that "Master." is a good proxy for male children
+boys <- data.combined[which(data.combined$title == "Master."),]
+summary(boys$Age)
+
+# We know that "Miss." is more complicated, let's examine further
+misses <- data.combined[which(data.combined$title == "Miss."),]
+summary(misses$Age)
+
+ggplot(misses[misses$Survived != "None",], aes(x = Age, fill = Survived)) +
+  facet_wrap(~Pclass) +
+  geom_histogram(binwidth = 5) +
+  ggtitle("Age for 'Miss.' by Pclass") + 
+  xlab("Age") +
+  ylab("Total Count")
+
+# OK, appears female children may have different survival rate, 
+# could be a candidate for feature engineering later
+misses.alone <- misses[which(misses$Sibsp == 0),] 
+                             #& (misses$Parch == 0)),]
+summary(misses.alone$Age)
+length(which(misses.alone$Age <= 14.5))
+
+# Move on to the sibsp variable, summarize the variable
+summary(data.combined$Sibsp)
